@@ -31,6 +31,17 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
+
+    const movieCollection = client.db('movieDB').collection('movie');
+
+    app.post('/movies', async (req, res) => {
+      const newMovie = req.body;
+      // console.log(newMovie);
+      const result = await movieCollection.insertOne(newMovie);
+      res.send(result);
+    })
+
+
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
@@ -44,10 +55,10 @@ run().catch(console.dir);
 
 
 
-app.get('/', (req, res) =>{
-      res.send(`Nabila's server is running`)
+app.get('/', (req, res) => {
+  res.send(`Nabila's server is running`)
 })
 
-app.listen(port, ()=>{
-    console.log(`Nabila's server is running on port:${port}`)
+app.listen(port, () => {
+  console.log(`Nabila's server is running on port:${port}`)
 })

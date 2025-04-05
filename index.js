@@ -34,12 +34,29 @@ async function run() {
 
     const movieCollection = client.db('movieDB').collection('movie');
 
+    app.get('/movies', async (req, res) => {
+      const cursor = movieCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+    app.get('/featured', async (req, res) => {
+      const featuredMovies = await movieCollection
+        .find()
+        .sort({ rating: -1 })
+        .limit(6)
+        .toArray();
+      res.send(featuredMovies);
+    })
+
     app.post('/movies', async (req, res) => {
       const newMovie = req.body;
       // console.log(newMovie);
       const result = await movieCollection.insertOne(newMovie);
       res.send(result);
-    })
+    }
+    )
+
 
 
     // Send a ping to confirm a successful connection

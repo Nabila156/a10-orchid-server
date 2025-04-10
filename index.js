@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -40,6 +40,13 @@ async function run() {
       res.send(result);
     })
 
+    app.get('/movie/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const movie = await movieCollection.findOne(query)
+      res.send(movie);
+    })
+
     app.get('/featured', async (req, res) => {
       const featuredMovies = await movieCollection
         .find()
@@ -48,6 +55,7 @@ async function run() {
         .toArray();
       res.send(featuredMovies);
     })
+   
 
     app.post('/movies', async (req, res) => {
       const newMovie = req.body;

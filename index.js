@@ -47,6 +47,13 @@ async function run() {
       res.send(movie);
     })
 
+    app.delete('/movie/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const movie = await movieCollection.deleteOne(query)
+      res.send(movie);
+    })
+
     app.get('/featured', async (req, res) => {
       const featuredMovies = await movieCollection
         .find()
@@ -62,8 +69,7 @@ async function run() {
       // console.log(newMovie);
       const result = await movieCollection.insertOne(newMovie);
       res.send(result);
-    }
-    )
+    })
 
 
 

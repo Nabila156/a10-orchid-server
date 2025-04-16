@@ -81,16 +81,21 @@ async function run() {
     // Get favorite movies by user email
     app.get('/favourites', async (req, res) => {
       const userEmail = req.query.email;
-      if (!userEmail) {
-        return res.status(400).send({ error: 'Email is required' });
+      let favourites;
+
+      if (userEmail) {
+        favourites = await favouriteCollection.find({ userEmail }).toArray();
+      } else {
+        favourites = await favouriteCollection.find().toArray(); // return all
       }
-      const favourites = await favouriteCollection.find({ userEmail }).toArray();
+
       res.send(favourites);
     });
 
+
     // Add to favorites
     app.post('/favourites', async (req, res) => {
-      const favMovie = req.body; 
+      const favMovie = req.body;
       const result = await favouriteCollection.insertOne(favMovie);
       res.send(result);
     });
@@ -103,7 +108,7 @@ async function run() {
       const result = await favouriteCollection.deleteOne(query);
       res.send(result);
     });
-    
+
 
 
 

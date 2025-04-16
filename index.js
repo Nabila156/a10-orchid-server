@@ -154,5 +154,5 @@ app.get('/', (req, res) => {
 })
 
 app.listen(port, () => {
-  console.log(`Nabila's server is running on port:${port}`)
+  console.log(`Orchid server is running on port:${port}`)
 })

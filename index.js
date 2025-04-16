@@ -110,6 +110,30 @@ async function run() {
     });
 
 
+    // Movie Update
+    app.put('/movie/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updatedMovie = req.body;
+      const movie = {
+        $set: {
+          title: updatedMovie.title,
+          poster: updatedMovie.poster,
+          genre: updatedMovie.genre,
+          duration: updatedMovie.duration,
+          year: updatedMovie.year,
+          summary: updatedMovie.summary,
+          rating: updatedMovie.rating
+        }
+      }
+
+      const result = await movieCollection.updateOne(filter, movie, options);
+      res.send(result);
+
+    })
+
+
 
 
     // Send a ping to confirm a successful connection

@@ -33,27 +33,34 @@ async function run() {
     // await client.connect();
 
     const movieCollection = client.db('movieDB').collection('movie');
+    const favouriteCollection = client.db('movieDB').collection('favourites');
 
+
+
+    // Get All Movies
     app.get('/movies', async (req, res) => {
       const cursor = movieCollection.find();
       const result = await cursor.toArray();
       res.send(result);
     })
 
+    // Get Movie by ID
     app.get('/movie/:id', async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)}
+      const query = { _id: new ObjectId(id) }
       const movie = await movieCollection.findOne(query)
       res.send(movie);
     })
 
+    // Delete Movie
     app.delete('/movie/:id', async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)}
+      const query = { _id: new ObjectId(id) }
       const movie = await movieCollection.deleteOne(query)
       res.send(movie);
     })
 
+    // Featured Movies
     app.get('/featured', async (req, res) => {
       const featuredMovies = await movieCollection
         .find()
@@ -62,14 +69,41 @@ async function run() {
         .toArray();
       res.send(featuredMovies);
     })
-   
 
+    // Add Movie
     app.post('/movies', async (req, res) => {
       const newMovie = req.body;
       // console.log(newMovie);
       const result = await movieCollection.insertOne(newMovie);
       res.send(result);
     })
+
+    // Get favorite movies by user email
+    app.get('/favourites', async (req, res) => {
+      const userEmail = req.query.email;
+      if (!userEmail) {
+        return res.status(400).send({ error: 'Email is required' });
+      }
+      const favourites = await favouriteCollection.find({ userEmail }).toArray();
+      res.send(favourites);
+    });
+
+    // Add to favorites
+    app.post('/favourites', async (req, res) => {
+      const favMovie = req.body; 
+      const result = await favouriteCollection.insertOne(favMovie);
+      res.send(result);
+    });
+
+
+    // Delete favorite movie by ID
+    app.delete('/favourites/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await favouriteCollection.deleteOne(query);
+      res.send(result);
+    });
+    
 
 
 
